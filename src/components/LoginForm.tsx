@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../globals.css';
 import Cookies from 'js-cookie';
- 
 
 function LoginForm({ onLoginSuccess }) {
   const navigate = useNavigate();
@@ -26,24 +25,27 @@ function LoginForm({ onLoginSuccess }) {
     console.log('Logging you in');
 
     try {
-      const data = new FormData(event.currentTarget);
+      // Directly use the `credentials` state instead of `FormData`
       const loginData = {
-        username: data.get('username'),
-        password: data.get('password'),
+        username: credentials.username,
+        password: credentials.password,
       };
 
       console.log(loginData);
 
-      const response = await axios.post('https://career-dashboard-9b2b8318a630.herokuapp.com/api/auth/login', loginData, {
-        withCredentials: true, // Send cookies with the request
-      });
+      const response = await axios.post(
+        'https://career-dashboard-9b2b8318a630.herokuapp.com/api/auth/login',
+        loginData,
+        {
+          withCredentials: true, // Send cookies with the request
+        }
+      );
 
       if (response.data.success) {
         // Redirect to dashboard on successful login
         console.log('Successful login');
         onLoginSuccess(response.data.token);
-        Cookies.set('jwt', response.data.token, {sameSite: 'strict'});
-        console.log(response.data.token);
+        Cookies.set('jwt', response.data.token, { sameSite: 'strict' });
         localStorage.setItem('jwt', response.data.token);
         navigate('/dashboard');
       } else {
@@ -52,7 +54,16 @@ function LoginForm({ onLoginSuccess }) {
       }
     } catch (error) {
       // Log any other errors that occur during the login process
-      console.error('Error during login:', error);
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        console.error('Server error during login:', error.response.data);
+      } else if (error.request) {
+        // Request was made, but no response was received
+        console.error('No response received:', error.request);
+      } else {
+        // Other errors (client-side, etc.)
+        console.error('Error during login:', error.message);
+      }
     }
   };
 
@@ -71,6 +82,7 @@ function LoginForm({ onLoginSuccess }) {
           label="Username"
           name="username"
           autoComplete="username"
+          value={credentials.username}
           onChange={handleChange}
         />
         <TextField
@@ -83,6 +95,7 @@ function LoginForm({ onLoginSuccess }) {
           type="password"
           id="password"
           autoComplete="current-password"
+          value={credentials.password}
           onChange={handleChange}
         />
         <Button
