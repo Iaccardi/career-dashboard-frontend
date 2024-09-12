@@ -34,7 +34,7 @@ function LoginForm({ onLoginSuccess }) {
 
       console.log(loginData);
 
-      const response = await axios.post('http://localhost:3001/api/auth/login', loginData, {
+      const response = await axios.post('https://career-dashboard-9b2b8318a630.herokuapp.com/api/auth/login', loginData, {
         withCredentials: true, // Send cookies with the request
       });
 
