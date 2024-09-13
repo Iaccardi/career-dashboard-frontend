@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import '../globals.css';
 import Welcome from '../components/dashComponents/Welcome.tsx';
 import { useAuth } from '../AuthContext.js';
@@ -27,7 +27,6 @@ const Dashboard = () => {
   // Access the 'username' property if it exists
   const username = usernameExists ? decodedAny.username : null;
 
-
   const [userData, setUserData] = useState(null);
 
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -38,26 +37,20 @@ const Dashboard = () => {
 
   const handleMenuClick = (menuItem) => {
     setSelectedMenuItem(menuItem);
-  }
-
-
+  };
 
   const handleLocationChange = (location) => {
-    setSelectedLocation(location)
-  }
+    setSelectedLocation(location);
+  };
 
   const handleCategoryChange = (category) => {
-    setSelectedCategory(category)
-  }
-
-  //STYLES//
-
- 
+    setSelectedCategory(category);
+  };
 
   useEffect(() => {
     if (authToken) {
       axios
-        .get('http://localhost:3001/api/users/userdata', {
+        .get(`${process.env.REACT_APP_API_URL}/api/users/userdata`, {
           headers: { Authorization: `Bearer ${authToken}` },
         })
         .then((response) => {
@@ -69,45 +62,38 @@ const Dashboard = () => {
         });
     } else {
       navigate('/login');
-
     }
   }, [authToken, navigate]);
 
   return (
-    <div  className='dashboard-container'>
+    <div className='dashboard-container'>
       <div className='left-dashboard'>
-        <Welcome authToken={authToken} username = {username}/>
-        <JobSalaries 
-        userData={userData}
-        location = {selectedLocation}
-        category = {selectedCategory}
-        onLocationChange={handleLocationChange}
-        onCategoryChange={handleCategoryChange}
-        setSearchTrue={setSearchPerformed}
-        searchPerformed={searchPerformed}
-        salaryData={salaryData}
+        <Welcome authToken={authToken} username={username} />
+        <JobSalaries
+          userData={userData}
+          location={selectedLocation}
+          category={selectedCategory}
+          onLocationChange={handleLocationChange}
+          onCategoryChange={handleCategoryChange}
+          setSearchTrue={setSearchPerformed}
+          searchPerformed={searchPerformed}
+          salaryData={salaryData}
         />
-
         <ContactList />
-
       </div>
       <div className='right-dashboard'>
-        <JobPosts 
-        userData={userData}
-        location = {selectedLocation}
-        category = {selectedCategory}
-        onLocationChange={handleLocationChange}
-        onCategoryChange={handleCategoryChange}
-        setSearchTrue={setSearchPerformed}
-        setSalaryData={setSalaryData}
-
-        
-        
+        <JobPosts
+          userData={userData}
+          location={selectedLocation}
+          category={selectedCategory}
+          onLocationChange={handleLocationChange}
+          onCategoryChange={handleCategoryChange}
+          setSearchTrue={setSearchPerformed}
+          setSalaryData={setSalaryData}
         />
-
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;

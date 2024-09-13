@@ -41,7 +41,7 @@ function ProfileForm() {
       console.log('Sending the data');
 
       const response = await axios.post(
-        'http://localhost:3001/api/users/updateProfile',
+        `${process.env.REACT_APP_API_URL}/api/users/updateProfile`, // Use environment variable for backend URL
         formData,
         {
           withCredentials: true, // Send cookies with the request

@@ -8,7 +8,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from '@mui/material'; import axios from 'axios';
+} from '@mui/material';
+import axios from 'axios';
 import '../globals.css';
 
 const Account = ({ authToken }) => {
@@ -44,6 +45,7 @@ const Account = ({ authToken }) => {
     "Other/General Jobs",
     "Unknown",
   ];
+
   const [userData, setUserData] = useState({
     name: '',
     email: '',
@@ -56,9 +58,9 @@ const Account = ({ authToken }) => {
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = {...errors}
+    const newErrors = { ...errors };
     const isValidEmail = /\S+@\S+\.\S+/.test(userData.email);
-    if(!isValidEmail) {
+    if (!isValidEmail) {
       newErrors.email = 'Please enter a valid email address';
       isValid = false;
     } else {
@@ -66,12 +68,12 @@ const Account = ({ authToken }) => {
     }
     setErrors(newErrors);
     return isValid;
-  }
+  };
 
   useEffect(() => {
     if (authToken) {
       axios
-        .get('http://localhost:3001/api/users/userdata', {
+        .get(`${process.env.REACT_APP_API_URL}/api/users/userdata`, {
           headers: { Authorization: `Bearer ${authToken}` },
         })
         .then((response) => {
@@ -91,19 +93,20 @@ const Account = ({ authToken }) => {
 
   const [errors, setErrors] = useState({
     email: '',
-  })
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const isValid = validateForm();
-    if(!isValid) {
+    if (!isValid) {
       return;
     }
+
     // Send a POST request to update user data
     axios
       .post(
-        'http://localhost:3001/api/users/updateAccount',
+        `${process.env.REACT_APP_API_URL}/api/users/updateAccount`, // Updated to use environment variable
         userData,
         {
           headers: { Authorization: `Bearer ${authToken}` },
@@ -124,14 +127,12 @@ const Account = ({ authToken }) => {
       });
   };
 
-  
-
   return (
     <Container className="account-container">
       <h1 className='account-heading'>Account Settings</h1>
       <form className="account-container" onSubmit={handleSubmit}>
-        <Grid container spacing={2}> {/* Use Grid to create two columns */}
-          <Grid item xs={6}> {/* First column */}
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
             <TextField
               label="Name"
               name="name"
@@ -140,7 +141,7 @@ const Account = ({ authToken }) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={6}> {/* Second column */}
+          <Grid item xs={6}>
             <TextField
               label="Email"
               name="email"
@@ -168,7 +169,7 @@ const Account = ({ authToken }) => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={6}> {/* Second column */}
+          <Grid item xs={6}>
             <TextField
               label="Degree"
               name="degree"
@@ -177,7 +178,7 @@ const Account = ({ authToken }) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={6}> {/* First column */}
+          <Grid item xs={6}>
             <TextField
               label="Expected Salary"
               name="expectedSalary"
@@ -186,7 +187,7 @@ const Account = ({ authToken }) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={6}> {/* Second column */}
+          <Grid item xs={6}>
             <TextField
               label="Skills"
               name="skills"
@@ -195,7 +196,7 @@ const Account = ({ authToken }) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={6}> {/* First column */}
+          <Grid item xs={6}>
             <TextField
               label="Experience Level"
               name="experienceLevel"
