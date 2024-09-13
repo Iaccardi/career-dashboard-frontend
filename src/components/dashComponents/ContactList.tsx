@@ -55,7 +55,7 @@ const ContactList = () => {
   
 
     try {
-      const response = await fetch('http://localhost:3001/api/contacts/create-contact', {
+      const response = await fetch('https://career-dashboard-9b2b8318a630.herokuapp.com/api/contacts/create-contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ const ContactList = () => {
   useEffect(() => {
     async function fetchContacts() {
       try {
-        const response = await fetch(`http://localhost:3001/api/contacts/get-contacts/${decodedToken.userId}`, {
+        const response = await fetch(`https://career-dashboard-9b2b8318a630.herokuapp.com/api/contacts/get-contacts/${decodedToken.userId}`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -112,7 +112,7 @@ const ContactList = () => {
   const handleDelete = async (contactId: number) => {
     
     try {
-      const response = await fetch(`http://localhost:3001/api/contacts/delete-contact/${contactId}`, {
+      const response = await fetch(`https://career-dashboard-9b2b8318a630.herokuapp.com/api/contacts/delete-contact/${contactId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${authToken}`,

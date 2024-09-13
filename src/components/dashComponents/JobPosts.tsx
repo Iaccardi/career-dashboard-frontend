@@ -105,9 +105,8 @@ const JobPosts = ({
     const encodedLocation = encodeURIComponent(selectedLocation);
     const currentPageParam = `page=${currentPage}`;
 
-    let apiUrl = `http://localhost:3001/api/joblistings?country=us&app_id=8cdc9434&app_key=f54176d02e1ee0e4f8e4f42bd531ff7c&what=${encodedCategory}&where=${encodedLocation}&page=${currentPage}`;
+    let apiUrl = `${process.env.REACT_APP_API_URL}?country=us&app_id=8cdc9434&app_key=f54176d02e1ee0e4f8e4f42bd531ff7c&what=${encodedCategory}&where=${encodedLocation}&${currentPageParam}`;
 
-  
 
    try {
       console.log(apiUrl)
