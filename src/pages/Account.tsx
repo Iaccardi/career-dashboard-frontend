@@ -56,6 +56,10 @@ const Account = ({ authToken }) => {
     experienceLevel: '',
   });
 
+  const [errors, setErrors] = useState({
+    email: '',
+  });
+
   const validateForm = () => {
     let isValid = true;
     const newErrors = { ...errors };
@@ -73,7 +77,7 @@ const Account = ({ authToken }) => {
   useEffect(() => {
     if (authToken) {
       axios
-        .get(`https://career-dashboard-9b2b8318a630.herokuapp.com/api/users/userdata`, {
+        .get('https://career-dashboard-9b2b8318a630.herokuapp.com/api/users/userdata', {
           headers: { Authorization: `Bearer ${authToken}` },
         })
         .then((response) => {
@@ -91,10 +95,6 @@ const Account = ({ authToken }) => {
     setUserData({ ...userData, [name]: value });
   };
 
-  const [errors, setErrors] = useState({
-    email: '',
-  });
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -103,10 +103,9 @@ const Account = ({ authToken }) => {
       return;
     }
 
-    // Send a POST request to update user data
     axios
       .post(
-        `https://career-dashboard-9b2b8318a630.herokuapp.com/api/users/updateAccount`, // Updated to use environment variable
+        'https://career-dashboard-9b2b8318a630.herokuapp.com/api/users/updateAccount', // Hardcoded API URL
         userData,
         {
           headers: { Authorization: `Bearer ${authToken}` },
@@ -114,10 +113,8 @@ const Account = ({ authToken }) => {
       )
       .then((response) => {
         if (response.data.success) {
-          // Account information updated successfully
           alert('Account information updated successfully');
         } else {
-          // Error updating account information
           alert('Error updating account information: ' + response.data.message);
         }
       })
