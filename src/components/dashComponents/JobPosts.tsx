@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -28,7 +28,6 @@ interface JobListing {
   };
   salary_max: number;
   redirect_url: string;
-  // You can add other properties if needed
 }
 
 interface JobListingsResponse {
@@ -36,15 +35,15 @@ interface JobListingsResponse {
   count: number; // Add count for total job listings
 }
 
-const JobPosts = ({ 
+const JobPosts = ({
   location,
   category,
   onLocationChange,
   onCategoryChange,
   userData,
   setSearchTrue,
-  setSalaryData
-  }) => {
+  setSalaryData,
+}) => {
   const [filters, setFilters] = useState({
     location: '',
     category: '',
@@ -85,18 +84,14 @@ const JobPosts = ({
     "Unknown",
   ];
 
-  const [jobListings, setJobListings] = useState<JobListingsResponse>({ results: [], count: 0 });
+  const [jobListings, setJobListings] = useState<JobListingsResponse>({
+    results: [],
+    count: 0,
+  });
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  
- 
-
-
-
   const [selectedLocation, setSelectedLocation] = useState('');
-
-
 
   const itemsPerPage = 10; // Number of items to display per page
 
@@ -105,11 +100,11 @@ const JobPosts = ({
     const encodedLocation = encodeURIComponent(selectedLocation);
     const currentPageParam = `page=${currentPage}`;
 
-    let apiUrl = `${process.env.REACT_APP_API_URL}?country=us&app_id=8cdc9434&app_key=f54176d02e1ee0e4f8e4f42bd531ff7c&what=${encodedCategory}&where=${encodedLocation}&${currentPageParam}`;
+    // Hardcoded API URL instead of using environment variable
+    let apiUrl = `https://career-dashboard-9b2b8318a630.herokuapp.com/api/joblistings?country=us&app_id=8cdc9434&app_key=f54176d02e1ee0e4f8e4f42bd531ff7c&what=${encodedCategory}&where=${encodedLocation}&${currentPageParam}`;
 
-
-   try {
-      console.log(apiUrl)
+    try {
+      console.log(apiUrl);
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -121,7 +116,7 @@ const JobPosts = ({
         const data: JobListingsResponse = await response.json();
         setJobListings({ results: data.results, count: data.count });
         setSearchPerformed(true);
-        setSalaryData(data.results.map(job => job.salary_max));
+        setSalaryData(data.results.map((job) => job.salary_max));
         console.log('Job listings data:', data);
 
         setTotalPages(Math.ceil(data.count / itemsPerPage));
@@ -142,24 +137,22 @@ const JobPosts = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     setCurrentPage(1);
     fetchJobListings();
     setSearchTrue(true);
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === 'location') {
-      setSelectedLocation(value); 
+      setSelectedLocation(value);
       onLocationChange(value);
-    } else if(name == 'category') {
+    } else if (name === 'category') {
       setFilters({ ...filters, [name]: value });
       onCategoryChange(value);
     }
   };
-  
 
   const handleLoadMore = () => {
     if (currentPage < totalPages) {
@@ -168,27 +161,31 @@ const JobPosts = ({
   };
 
   const convertJobTime = (jobTime) => {
-    if(jobTime = "full_time") {
-      return "Full Time";
-    } else if (jobTime == "part_time") {
-      return "Part Time";
+    if ((jobTime = 'full_time')) {
+      return 'Full Time';
+    } else if (jobTime == 'part_time') {
+      return 'Part Time';
     } else {
       return jobTime;
     }
-  }
-
-  
-
+  };
 
   return (
     <Card className="job-container">
-      <Typography variant="h5" component="div" className="job-heading" style = {{color: '#1876D2'}}>
+      <Typography
+        variant="h5"
+        component="div"
+        className="job-heading"
+        style={{ color: '#1876D2' }}
+      >
         Job Postings
       </Typography>
 
-      <Typography variant='body1'>You can search by State or by Zip Code. Please choose one only</Typography>
+      <Typography variant="body1">
+        You can search by State or by Zip Code. Please choose one only
+      </Typography>
 
-      <form className='job-form' onSubmit={handleSubmit}>
+      <form className="job-form" onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
@@ -221,46 +218,84 @@ const JobPosts = ({
             </FormControl>
           </Grid>
         </Grid>
-        <Button type="submit" variant="contained" color="primary" size="small" className='job-button'>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="small"
+          className="job-button"
+        >
           Search Jobs
         </Button>
       </form>
 
       {searchPerformed ? (
         Array.isArray(jobListings.results) && jobListings.results.length > 0 ? (
-          jobListings.results.reduce((uniqueJobListings: React.ReactNode[], jobListing) => {
-            if (!uniqueCompanyNames.has(jobListing.company.display_name)) {
-              uniqueCompanyNames.add(jobListing.company.display_name);
-              const truncatedDescription = jobListing.description.split(' ').slice(0, 50).join(' ');
-              const truncatedDescriptionWithEllipsis = truncatedDescription + (jobListing.description.split(' ').length > 50 ? ' ...' : '');
-              uniqueJobListings.push(
-                <div key={jobListing.id} className="job-listing" style={{ border: '1px solid #ccc', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', padding: '10px', marginBottom: '10px' }}>
-                  <Typography variant="h6">
-                    <strong style={{ color: '#1876d2' }}>{jobListing.company.display_name}</strong>
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong style={{ color: '#004488' }}>Title:</strong> {jobListing.title}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong style={{ color: '#004488' }}>Contract Time:</strong> {convertJobTime(jobListing.contract_time)}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong style={{ color: '#004488' }}>Description:</strong> {truncatedDescriptionWithEllipsis}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong style={{ color: '#004488' }}>Location:</strong> {jobListing.location.display_name}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong style={{ color: '#004488' }}>Salary Max:</strong> {jobListing.salary_max}
-                  </Typography>
-                  <a href={jobListing.redirect_url} target="_blank" rel="noopener noreferrer">
-                    <strong>Learn More</strong>
-                  </a>
-                </div>
-              );
-            }
-            return uniqueJobListings;
-          }, [])
+          jobListings.results.reduce(
+            (uniqueJobListings: React.ReactNode[], jobListing) => {
+              if (!uniqueCompanyNames.has(jobListing.company.display_name)) {
+                uniqueCompanyNames.add(jobListing.company.display_name);
+                const truncatedDescription = jobListing.description
+                  .split(' ')
+                  .slice(0, 50)
+                  .join(' ');
+                const truncatedDescriptionWithEllipsis =
+                  truncatedDescription +
+                  (jobListing.description.split(' ').length > 50
+                    ? ' ...'
+                    : '');
+                uniqueJobListings.push(
+                  <div
+                    key={jobListing.id}
+                    className="job-listing"
+                    style={{
+                      border: '1px solid #ccc',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                      padding: '10px',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    <Typography variant="h6">
+                      <strong style={{ color: '#1876d2' }}>
+                        {jobListing.company.display_name}
+                      </strong>
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong style={{ color: '#004488' }}>Title:</strong>{' '}
+                      {jobListing.title}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong style={{ color: '#004488' }}>
+                        Contract Time:
+                      </strong>{' '}
+                      {convertJobTime(jobListing.contract_time)}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong style={{ color: '#004488' }}>Description:</strong>{' '}
+                      {truncatedDescriptionWithEllipsis}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong style={{ color: '#004488' }}>Location:</strong>{' '}
+                      {jobListing.location.display_name}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong style={{ color: '#004488' }}>Salary Max:</strong>{' '}
+                      {jobListing.salary_max}
+                    </Typography>
+                    <a
+                      href={jobListing.redirect_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <strong>Learn More</strong>
+                    </a>
+                  </div>
+                );
+              }
+              return uniqueJobListings;
+            },
+            []
+          )
         ) : (
           <p>No job listings found</p>
         )
@@ -282,6 +317,5 @@ const JobPosts = ({
     </Card>
   );
 };
-
 
 export default JobPosts;
