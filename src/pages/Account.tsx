@@ -73,7 +73,7 @@ const Account = ({ authToken }) => {
   useEffect(() => {
     if (authToken) {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/api/users/userdata`, {
+        .get(`${process.env.REACT_APP_API_URL}/users/userdata`, {
           headers: { Authorization: `Bearer ${authToken}` },
         })
         .then((response) => {
@@ -106,7 +106,7 @@ const Account = ({ authToken }) => {
     // Send a POST request to update user data
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/api/users/updateAccount`, // Updated to use environment variable
+        `${process.env.REACT_APP_API_URL}/users/updateAccount`, // Updated to use environment variable
         userData,
         {
           headers: { Authorization: `Bearer ${authToken}` },
