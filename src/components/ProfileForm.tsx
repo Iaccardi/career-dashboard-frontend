@@ -41,7 +41,7 @@ function ProfileForm() {
       console.log('Sending the data');
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/users/updateProfile`, // Use environment variable for backend URL
+        'https://career-dashboard-9b2b8318a630.herokuapp.com/api/users/updateProfile', // Hardcoded API URL
         formData,
         {
           withCredentials: true, // Send cookies with the request
