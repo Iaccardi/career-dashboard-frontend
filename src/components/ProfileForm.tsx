@@ -44,6 +44,7 @@ function ProfileForm() {
         'https://career-dashboard-9b2b8318a630.herokuapp.com/api/users/updateProfile', // Hardcoded API URL
         formData,
         {
+
           withCredentials: true, // Send cookies with the request
         }
       );

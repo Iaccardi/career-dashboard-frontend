@@ -50,7 +50,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (authToken) {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/api/users/userdata`, {
+        .get(`${process.env.REACT_APP_API_URL}/users/userdata`, {
           headers: { Authorization: `Bearer ${authToken}` },
         })
         .then((response) => {
